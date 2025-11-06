@@ -1,117 +1,131 @@
-# Virtual Receptor Modeling Suite
+# VReceptor - Virtual Receptor Modeling Suite
 
-This repository provides a framework for simulating peptide-receptor interactions, generating peptide mutation libraries, and benchmarking machine learning models (such as LSTM networks) on virtual assay data. It is designed for peptide chemoinformatics, virtual screening, and ML model development.
+A Python package for simulating peptide-receptor interactions, generating peptide mutation libraries, and benchmarking machine learning models on virtual assay data. VReceptor provides a framework for virtual drug discovery and peptide optimization workflows, particularly useful for pharmaceutical research involving peptide-based therapeutics.
 
----
+## 🚀 Installation
 
-## Contents
+### From GitHub (Recommended)
+```bash
+pip install git+https://github.com/KCF_nngithub/VReceptor.git
+```
 
-- [`VReceptor.py`](./VReceptor.py): Python module for simulating a virtual receptor and generating peptide mutation libraries.
-- [`VReceptor.ipynb`](./VReceptor.ipynb): Jupyter notebook demonstrating a full workflow from virtual screening to ML model evaluation.
-- [`LSTM_model.py`](./LSTM_model.py): Python module implementing LSTM-based regressors for peptide property prediction.
+### For Development
+```bash
+git clone https://github.com/KCF_nngithub/VReceptor.git
+cd VReceptor
+pip install -e .
+```
 
----
+## 🔬 Quick Start
 
-## 1. `VReceptor.py`
-
-**Purpose:**  
-Defines the `vreceptor` class, which simulates a virtual receptor based on a reference peptide and a customizable pharmacophore function. Also provides utilities for generating peptide mutants.
-
-**Key Features:**
-- **Virtual Receptor Simulation:**  
-  - Models peptide-receptor interactions using customizable similarity metrics (cosine, chebyshev, L2).
-  - Supports flexible pharmacophore modeling via Gaussian functions.
-- **Virtual Assay:**  
-  - Simulates binding/affinity (e.g., logIC50) for peptide lists, with optional noise.
-  - Outputs results as a pandas DataFrame.
-- **Peptide Mutation Generator:**  
-  - Enumerates all possible single, double, or higher-order mutants of a peptide sequence.
-
-**Example Usage:**
+### Basic Virtual Receptor Usage
 ```python
 from VReceptor import vreceptor, peptide_generator
 
-# Create a virtual receptor
+# Create a virtual receptor with pharmacophore model
+# Parameters: reference_sequence, n_gaussians, offset, gaussian_params...
 receptor = vreceptor('SRTHRHSMEIRTPDINPAWYASRGIRPVGRF', 2, 0, 30, 3, 5, 15, 2, 2)
 
-# Generate all single mutants
+# Generate peptide mutants
 mutants = list(peptide_generator('SRTHRHSMEIRTPDINPAWYASRGIRPVGRF', number_of_mut=1))
+print(f"Generated {len(mutants)} single mutants")
 
-# Run a virtual assay
+# Run virtual assay with noise
 results = receptor.virtual_assay(mutants, noise=0.1)
 print(results.head())
 ```
 
----
-
-## 2. `VReceptor.ipynb`
-
-**Purpose:**  
-A Jupyter notebook that demonstrates the end-to-end workflow:
-- Setting up a virtual receptor and pharmacophore model.
-- Generating peptide mutation libraries (single, double, triple mutants).
-- Running virtual assays to simulate experimental data.
-- Encoding peptide sequences for ML.
-- Training and evaluating LSTM models on the generated data.
-- Visualizing results and comparing model performance.
-
-**How to Use:**  
-Open the notebook in Jupyter or VS Code and run the cells sequentially.  
-Make sure `VReceptor.py` and `LSTM_model.py` are in the same directory or Python path.
-
----
-
-## 3. `LSTM_model.py`
-
-**Purpose:**  
-Implements LSTM-based regression models for predicting peptide properties from encoded sequences.
-
-**Key Features:**
-- **LSTM Model Class:**  
-  - Flexible input/output dimensions.
-  - Supports GPU acceleration.
-- **Training and Prediction:**  
-  - Methods for fitting the model to data and making predictions.
-  - Compatible with one-hot encoded peptide sequences.
-
-**Example Usage:**
+### Advanced Usage with LSTM Models
 ```python
-from LSTM_model import LSTM, NN
+from LSTM_model import NN
+import numpy as np
 
-# X_train: shape (num_samples, seq_length, num_aa)
-# y_train: shape (num_samples, 1)
-model = NN(LSTM(X_train.shape[2], y_train.shape[1]), GPU=True)
-model.fit(X_train, y_train)
-predictions = model.predict(X_test)
+# Load your peptide data (example format)
+sequences = ['SRTHRHSMEIRTPDINPAWYASRGIRPVGRF', ...]
+activities = [6.5, 7.2, ...]  # logIC50 values
+
+# Train LSTM model
+model = NN(input_size=20, output_size=1)  # 20 amino acids
+# model.fit(X_train, y_train)  # Your encoded sequences
 ```
 
----
+## ✨ Features
 
-## Requirements
+### Core Functionality
+- **🧬 Virtual Receptor Simulation**: Models peptide-receptor interactions using customizable pharmacophore models
+- **🔄 Peptide Mutation Generator**: Systematic enumeration of single, double, or higher-order mutants
+- **📊 Multiple Distance Metrics**: Cosine, Chebyshev, and L2 distance calculations for amino acid similarity
+- **⚡ Virtual Assay**: High-throughput simulation of binding/affinity assays with configurable noise
 
-- Python 3.7+
-- numpy
-- pandas
-- scipy
-- scikit-learn
-- torch
-- tqdm
-- matplotlib
-- packaging
+### Machine Learning Components
+- **🤖 LSTM Neural Networks**: PyTorch-based bidirectional LSTM for sequence-to-activity prediction
+- **🎯 Regression Models**: Specialized for peptide property prediction tasks
+- **🔧 Flexible Architecture**: Customizable hidden layers, dropout, and bidirectional options
 
----
+### Analysis Tools
+- **📈 Z-scale Descriptors**: Built-in amino acid property descriptors for 20 standard amino acids
+- **🎨 Visualization**: Integration with matplotlib for pharmacophore and activity plotting
+- **📋 Data Export**: CSV output support for downstream analysis
 
-## References
+## 📁 Repository Structure
 
-- Sandberg, M., et al. (1998). "New chemical descriptors relevant for the design of biologically active peptides. A multivariate characterization of 87 amino acids." J. Med. Chem.
-- [scipy.spatial.distance.euclidean](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.euclidean.html)
+```
+VReceptor/
+├── VReceptor/                    # Main package
+│   ├── __init__.py              # Package initialization & imports
+│   ├── VReceptor.py             # Core virtual receptor functionality
+│   └── README.md                # Package documentation
+├── LSTM_model.py                # PyTorch LSTM models for ML
+├── VReceptor.ipynb              # Usage examples and tutorials
+├── VirtualReceptor-fitting.ipynb # Model fitting examples
+├── setup.py                     # Package configuration
+├── requirements*.txt            # Dependency specifications
+├── MANIFEST.in                  # Package manifest
+└── LICENSE                      # MIT license
+```
 
----
+## 📚 Documentation & Examples
 
-## License
+### Jupyter Notebooks
+- **`VReceptor.ipynb`**: Comprehensive tutorial showcasing virtual receptor creation, pharmacophore modeling, and virtual assays
+- **`VirtualReceptor-fitting.ipynb`**: Advanced examples of model fitting and parameter optimization
 
-This code is intended for research and fun.
+### Key Classes & Functions
+- **`vreceptor`**: Main class for virtual receptor simulation
+- **`peptide_generator`**: Generator function for systematic peptide mutations
+- **`LSTM` & `NN`**: PyTorch neural network models for peptide property prediction
 
-## Got Questions?
+### API Reference
+```python
+# Virtual Receptor
+vreceptor(reference_sequence, *gaussian_params, func=func, aa=aa, aa_norm=cosine_dist)
 
-Contact KCF.
+# Peptide Generation
+peptide_generator(peptide, number_of_mut=1, start=0, stop=None, aa=standard_aa, exclude_C=True)
+
+# Distance Metrics
+cosine_dist(aa_list)      # Cosine distance between amino acids
+chebyshev_dist(aa_list)   # Chebyshev distance
+L2_dist(aa_list)          # L2 (Euclidean) distance
+```
+
+## 🔬 Applications
+
+- **Drug Discovery**: Virtual screening of peptide libraries
+- **Protein Engineering**: Rational design of peptide variants
+- **SAR Analysis**: Structure-activity relationship studies
+- **ML Benchmarking**: Testing sequence-to-function prediction models
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Kilian Conde-Frieboes**  
+*Novo Nordisk*  
+📧 kcf@novonordisk.com
+
+## 📈 Version
+
+Current version: **1.0.0** (October 2025)
