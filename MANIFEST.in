@@ -1,0 +1,7 @@
+include VReceptor/README.md
+#include VReceptor/*.ipynb
+include *.md
+include LICENSE
+recursive-include VReceptor VReceptor.py
+#recursive-include VReceptor *.ipynb
+recursive-include VReceptor *.md
