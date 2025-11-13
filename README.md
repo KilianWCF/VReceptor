@@ -6,12 +6,12 @@ A Python package for simulating peptide-receptor interactions, generating peptid
 
 ### From GitHub (Recommended)
 ```bash
-pip install git+https://github.com/KCF_nngithub/VReceptor.git
+pip install git+https://github.com/KilianWCF/VReceptor.git
 ```
 
 ### For Development
 ```bash
-git clone https://github.com/KCF_nngithub/VReceptor.git
+git clone https://github.com/KilianWCF/VReceptor.git
 cd VReceptor
 pip install -e .
 ```
