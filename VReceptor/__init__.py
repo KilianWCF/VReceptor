@@ -9,5 +9,5 @@ __version__ = "1.0.0"
 __author__ = "Kilian Conde-Frieboes"
 
 
-from .VReceptor import vreceptor, peptide_generator, cosine_dist, chebyshev_dist, L2_dist, func
+from .VReceptor import vreceptor, peptide_generator, cosine_dist, chebyshev_dist, L2_dist, func, aa
 #from .LSTM_model import *
